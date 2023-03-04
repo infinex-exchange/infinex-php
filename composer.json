@@ -3,10 +3,10 @@
     "description": "Official PHP wrapper for the Infinex APIs",
     "type": "library",
     "license": "Apache-2.0",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
-        "react/http": "1.x-dev",
-        "react/async": "4.x-dev"
+        "react/http": "^1.8",
+        "react/async": "^4.0"
     },
     "autoload": {
         "psr-4": {
