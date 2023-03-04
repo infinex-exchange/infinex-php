@@ -1,0 +1,19 @@
+{
+    "name": "infinex-exchange/infinex-php",
+    "description": "Official PHP wrapper for the Infinex APIs",
+    "type": "library",
+    "license": "Apache-2.0",
+    "minimum-stability": "dev",
+    "require": {
+        "react/http": "1.x-dev",
+        "react/async": "4.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Infinex\\": "src/"
+        }
+    },
+    "archive": {
+        "exclude": ["/examples"]
+    }
+}
