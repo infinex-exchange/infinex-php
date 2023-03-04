@@ -59,7 +59,7 @@ $infinex -> wallet -> getBalance('BTC') -> then(
 	function($response) {
 		var_dump($response);
 	},
-	function($exception) {
+	function($e) {
 		echo get_class($e).': '.$e->getMessage()."\n";
 	}
 );
