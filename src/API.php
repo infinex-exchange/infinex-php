@@ -4,6 +4,7 @@ namespace Infinex;
 
 use Infinex\Exceptions\InfinexException;
 use Infinex\Methods;
+use React\Promise\Deferred;
 
 class API {
     private $t;
@@ -45,8 +46,18 @@ class API {
     }
     
     public function requestPrv($endpoint, $payload = []) {
-        if(!$this -> apiKey)
-            throw new InfinexException('Unauthorized');
+        if(!$this -> apiKey) {
+            $deferred = new Deferred();
+            
+            $deferred -> reject(
+                new InfinexException('Unauthorized')
+            );
+            
+            if($this -> async)
+                return $deferred -> promise();
+            else
+                return \React\Async\await($deferred -> promise());
+        }
         
         $payload['api_key'] = $this -> apiKey;
         
