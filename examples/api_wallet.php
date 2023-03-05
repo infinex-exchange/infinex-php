@@ -78,7 +78,7 @@ try {
     $xid = $infinex -> wallet -> withdraw('USDT', 'TRX', 'TAA000000000000000000000000', '5', '3.5');
     
     // Then cancel this withdrawal
-    $infinex -> cancelWithdrawal($xid);
+    $infinex -> wallet -> cancelWithdrawal($xid);
     
     // Get addresses saved in address book
     var_dump(
