@@ -21,7 +21,11 @@ class Spot {
         if(isset($sort)) $payload['quote'] = $sort;
         if(isset($sortDir)) $payload['sort_dir'] = $sortDir;
         
-        return $this -> api -> request($endpoint, $payload) -> markets;
+        return $this -> api -> request($endpoint, $payload) -> then(
+            function($resp) {
+                return $resp -> markets;
+            }
+        );
     }
     
     public function getMarket($pairid, $extended = false) {
@@ -30,7 +34,11 @@ class Spot {
         
         return $this -> api -> request($endpoint, [
             'pair' => $pairid
-        ]) -> markets[0];
+        ]) -> then(
+            function($resp) {
+                return $resp -> markets[0];
+            }
+        );
     }
     
     public function searchMarkets($query, $offset = 0, $quote = null, $sort = null, $sortDir = null, $extended = false) {
@@ -46,7 +54,11 @@ class Spot {
         if(isset($sort)) $payload['quote'] = $sort;
         if(isset($sortDir)) $payload['sort_dir'] = $sortDir;
         
-        return $this -> api -> request($endpoint, $payload) -> markets;
+        return $this -> api -> request($endpoint, $payload) -> then(
+            function($resp) {
+                return $resp -> markets;
+            }
+        );
     }
     
     public function getOrderBook($pairid) {
@@ -59,7 +71,11 @@ class Spot {
         return $this -> api -> request('/spot/trades', [
             'offset' => $offset,
             'pair' => $pairid
-        ]) -> trades;
+        ]) -> then(
+            function($resp) {
+                return $resp -> trades;
+            }
+        );
     }
     
     public function getCandleSticks($pairid, $res, $from, $to) {
@@ -68,7 +84,11 @@ class Spot {
             'res' => $res,
             'from' => $from,
             'to' => $to
-        ]) -> candlestick;
+        ]) -> then(
+            function($resp) {
+                return $resp -> candlestick;
+            }
+        );
     }
     
     public function getOpenOrders($offset = 0, $pairid = null) {
@@ -78,7 +98,11 @@ class Spot {
         
         if(isset($pairid)) $payload['filter_pair'] = $pairid;
         
-        return $this -> api -> requestPrv('/spot/open_orders', $payload) -> orders;
+        return $this -> api -> requestPrv('/spot/open_orders', $payload) -> then(
+            function($resp) {
+                return $resp -> orders;
+            }
+        );
     }
     
     public function getOrdersHistory($offset = 0, $pairid = null) {
@@ -88,7 +112,11 @@ class Spot {
         
         if(isset($pairid)) $payload['filter_pair'] = $pairid;
         
-        return $this -> api -> requestPrv('/spot/orders_history', $payload) -> orders;
+        return $this -> api -> requestPrv('/spot/orders_history', $payload) -> then(
+            function($resp) {
+                return $resp -> orders;
+            }
+        );
     }
     
     public function getTradesHistory($offset = 0, $pairid = null) {
@@ -98,7 +126,11 @@ class Spot {
         
         if(isset($pairid)) $payload['filter_pair'] = $pairid;
         
-        return $this -> api -> requestPrv('/spot/trades_history', $payload) -> trades;
+        return $this -> api -> requestPrv('/spot/trades_history', $payload) -> then(
+            function($resp) {
+                return $resp -> trades;
+            }
+        );
     }
     
     public function postOrder($pairid, $side, $type, $tif, $price = null, $amount = null, $respType = null, $total = null, $stop = null) {
@@ -119,7 +151,7 @@ class Spot {
     }
     
     public function cancelOrder($obid) {
-        $this -> api -> requestPrv('/spot/open_orders/cancel', [
+        return $this -> api -> requestPrv('/spot/open_orders/cancel', [
             'obid' => $obid
         ]);
     }

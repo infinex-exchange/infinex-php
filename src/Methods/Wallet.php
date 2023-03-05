@@ -10,37 +10,57 @@ class Wallet {
     }
     
     public function getAssets($offset = 0) {
-        return (array) $this -> api -> request('/wallet/assets', [
+        return $this -> api -> request('/wallet/assets', [
             'offset' => $offset
-        ]) -> assets;
+        ]) -> then(
+            function($resp) {
+                return (array) $resp -> assets;
+            }
+        );
     }
     
     public function getAsset($symbol) {
         return $this -> api -> request('/wallet/assets', [
             'symbols' => [ $symbol ]
-        ]) -> assets -> $symbol;
+        ]) -> then(
+            function($resp) use($symbol) {
+                return $resp -> assets -> $symbol;
+            }
+        );
     }
     
     public function searchAssets($query, $offset = 0) {
-        return (array) $this -> api -> request('/wallet/assets', [
+        return $this -> api -> request('/wallet/assets', [
             'search' => $query,
             'offset' => $offset
-        ]) -> assets;
+        ]) -> then(
+            function($resp) {
+                return (array) $resp -> assets;
+            }
+        );
     }
     
     public function getNetworksForAsset($assetid) {
-        return (array) $this -> api -> request('/wallet/networks', [
+        return $this -> api -> request('/wallet/networks', [
             'asset' => $assetid
-        ]) -> networks;
+        ]) -> then(
+            function($resp) {
+                return (array) $resp -> networks;
+            }
+        );
     }
     
     public function getBalances($offset = 0, $extended = false) {
         $endpoint = '/wallet/balances';
         if($extended) $endpoint .= '_ex';
         
-        return (array) $this -> api -> requestPrv($endpoint, [
+        return $this -> api -> requestPrv($endpoint, [
             'offset' => $offset
-        ]) -> balances;
+        ]) -> then(
+            function($resp) {
+                return (array) $resp -> balances;
+            }
+        );
     }
     
     public function getBalance($assetid, $extended = false) {
@@ -49,7 +69,11 @@ class Wallet {
         
         return $this -> api -> requestPrv($endpoint, [
             'symbols' => [ $assetid ]
-        ]) -> balances -> $assetid;
+        ]) -> then(
+            function($resp) use($assetid) {
+                return $resp -> balances -> $assetid;
+            }
+        );
     }
     
     public function getTransactions($offset = 0, $assetid = null, $type = null, $status = null) {
@@ -61,7 +85,11 @@ class Wallet {
         if(isset($type)) $payload['type'] = $type;
         if(isset($status)) $payload['status'] = $status;
         
-        return $this -> api -> requestPrv('/wallet/transactions', $payload) -> transactions;
+        return $this -> api -> requestPrv('/wallet/transactions', $payload) -> then(
+            function($resp) {
+                return $resp -> transactions;
+            }
+        );
     }
     
     public function deposit($assetid, $netid) {
@@ -102,11 +130,15 @@ class Wallet {
         if(isset($memo)) $payload['memo'] = $memo;
         if(isset($adbkName)) $payload['adbk_name'] = $adbkName;
         
-        return $this -> api -> requestPrv('/wallet/withdraw', $payload) -> xid;
+        return $this -> api -> requestPrv('/wallet/withdraw', $payload) -> then(
+            function($resp) {
+                return $resp -> xid;
+            }
+        );
     }
     
     public function cancelWithdrawal($xid) {
-        $this -> api -> requestPrv('/wallet/withdraw/cancel', [
+        return $this -> api -> requestPrv('/wallet/withdraw/cancel', [
             'xid' => $xid
         ]);
     }
@@ -117,18 +149,22 @@ class Wallet {
         if(isset($assetid)) $payload['asset'] = $assetid;
         if(isset($netid)) $payload['network'] = $netid;
         
-        return $this -> api -> requestPrv('/wallet/addressbook', $payload) -> addressbook;
+        return $this -> api -> requestPrv('/wallet/addressbook', $payload) -> then(
+            function($resp) {
+                return $resp -> addressbook;
+            }
+        );
     }
     
     public function renameAdbkItem($adbkid, $newName) {
-        $this -> api -> requestPrv('/wallet/addressbook/rename', [
+        return $this -> api -> requestPrv('/wallet/addressbook/rename', [
             'adbkid' => $adbkid,
             'new_name' => $newName
         ]);
     }
     
     public function deleteAdbkItem($adbkid) {
-        $this -> api -> requestPrv('/wallet/addressbook/delete', [
+        return $this -> api -> requestPrv('/wallet/addressbook/delete', [
             'adbkid' => $adbkid
         ]);
     }
