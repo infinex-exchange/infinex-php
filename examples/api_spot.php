@@ -8,17 +8,17 @@ $infinex = new Infinex\API(
 try {
     // Get first 50 trading pairs
     var_dump(
-        $infinex -> spot -> getMarkets();
+        $infinex -> spot -> getMarkets()
     );
     
     // Get next 50 assets supported by exchange
     var_dump(
-        $infinex -> spot -> getMarkets(50);
+        $infinex -> spot -> getMarkets(50)
     );
     
     // Get first 50 trading pairs but only quoted to USDT
     var_dump(
-        $infinex -> spot -> getMarkets(0, 'USDT');
+        $infinex -> spot -> getMarkets(0, 'USDT')
     );
     
     // Get current market price of BPX/USDT

@@ -8,12 +8,12 @@ $infinex = new Infinex\API(
 try {
     // Get first 50 assets supported by exchange
     var_dump(
-        $infinex -> wallet -> getAssets();
+        $infinex -> wallet -> getAssets()
     );
     
     // Get next 50 assets supported by exchange
     var_dump(
-        $infinex -> wallet -> getAssets(50);
+        $infinex -> wallet -> getAssets(50)
     );
     
     // Get icon of USDT token
