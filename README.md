@@ -139,4 +139,68 @@ $loop -> run();
 ```
 
 ## Streams
-- Available soon
+To use Infinex streams, you need to create a ReactPHP EventLoop, initialize the `StreamsClient` object and connect to the exchange server:
+```php
+use React\EventLoop\Loop;
+
+$loop = Loop::get();
+
+$infinex = new Infinex\StreamsClient($loop, 'wss://stream.infinex.cc');
+
+$infinex -> open() -> then(
+	function() {
+		echo "Connection successfull\n";
+	},
+	function($e) {
+		echo 'Connection failed: '.$e -> getMessage()."\n";
+	}
+);
+```
+If the connection is broken, the `StreamsClient` object will automatically reconnect, re-login and restore all subscriptions. However, certain events, e.g. orderbook update, may take place when we were not connected. Therefore, we can catch and react to connection lost and restore events.
+```php
+$infinex -> on('open', function() {
+    echo "Connected to Infinex streams server\n";
+});
+
+$infinex -> on('close', function() {
+    echo "Disconnected from Infinex streams server\n";
+});
+```
+To subscribe to a stream or multiple streams we can use the `sub` function. As the first argument, we pass the name of the stream or an array of stream names, as the second argument we pass the callback function that will be called each time the stream receives an event.
+```php
+$infinex -> sub(
+	'BPX/USDT@ticker',
+    function($event) {
+        echo 'Alert! Market price changed to '.$event -> price."\n";
+    }
+) -> then(
+	function() {
+		echo "Subscribed!\n";
+    },
+    function($e) {
+        echo "Failed to subscribe! '.$e->getMessage()."\n";
+    }
+);
+```
+To unsubscribe from a stream or multiple streams, use the `unsub` function
+```php
+$infinex -> unsub('BPX/USDT@ticker') -> then(
+	function() {
+		echo "Unsubscribed!\n";
+    },
+    function($e) {
+        echo "Failed to unsubscribe! '.$e->getMessage()."\n";
+    }
+);
+```
+To use private streams, login to the exchange with your API key first
+```php
+$infinex -> login('api_key_here') -> then(
+	function() {
+		echo "Logged in\n";
+	},
+	function($e) {
+		echo "Login error! ".$e -> getMessage()."\n";
+	}
+);
+```
